@@ -1,5 +1,6 @@
 # Github Development Action 
 
+https://help.github.com/ja/actions/building-actions/creating-a-javascript-action
 Marks a deployment status for GitHub actions.
 
 ## Parameters
