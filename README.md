@@ -7,7 +7,6 @@ Marks a deployment for GitHub actions.
 
 ### Inputs
 
-- `auto-merge`: Attempt to automatically merge the default branch into the requested ref, defaults to true.
 - `description`: Short description of the deployment.
 - `environment`: Name for the target deployment environment.
 - `payload`: JSON payload with extra information about the deployment. 

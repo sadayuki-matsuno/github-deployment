@@ -5,7 +5,6 @@ async function run() {
   try {
     const context = github.context;
     const token = core.getInput('token', {required: true});
-    const autoMerge = core.getInput('auto-merge', {required: false}) | false;
     const description = core.getInput('description', {required: false});
     const environment = core.getInput('environment', {required: false});
     const payload = core.getInput('payload', {required: false});
@@ -15,7 +14,7 @@ async function run() {
     const client = new github.GitHub(token);
     const params = {
       ...context.repo,
-      auto_merge: autoMerge,
+      auto_merge: true,
       description,
       environment,
       payload,
