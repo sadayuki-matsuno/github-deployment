@@ -1,18 +1,18 @@
 # Github Development Action 
 
 https://help.github.com/ja/actions/building-actions/creating-a-javascript-action
-Marks a deployment status for GitHub actions.
+Marks a deployment for GitHub actions.
 
 ## Parameters
 
 ### Inputs
 
-- `staus`: Deployment status. (default: pending)
-- `description`: Descriptive message about the deployment state.
-- `log-url`: Log url location.
-- `token`: Github repository token.
-- `environment`: Name for the target deployment environment, which can be changed when setting a deploy status.
-- `environment-url`: URL for accessing your environment.
+- `auto-merge`: Attempt to automatically merge the default branch into the requested ref, defaults to true.
+- `description`: Short description of the deployment.
+- `environment`: Name for the target deployment environment.
+- `payload`: JSON payload with extra information about the deployment. 
+- `ref-id`: The node ID of the ref to be deployed.
+- `task`: Specifies a task to execute.
 
 ## Example
 
@@ -34,13 +34,12 @@ jobs:
       with:
         node-version: 8.x
 
-    - name: 'deploy'
-      run: |
-        npm run deploy
-
-    - name: 'change deployment status'
+    - name: 'create deployment'
       uses: 'sadayuki-matsuno/github-deployment@v1'
       with:
-        state: '${{ job.status }}'
         token: '${{ github.token }}'
+        ref-id: '${{ github.ref }}'
+        task: 'deploy'
+        description: 'this is executed by github action'
+        environment: 'production'
 ```

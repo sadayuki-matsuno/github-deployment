@@ -3,47 +3,28 @@ const github = require("@actions/github");
 
 async function run() {
   try {
-    const jobStatusSuccess = 'Success'
-    const jobStatusFailure = 'Failure'
-    const jobStatusPending = 'Pending'
-
-    const deployStateSuccess = 'success'
-    const deployStateFailure = 'failure'
-    const deployStatePending = 'pending'
-
     const context = github.context;
-    const defaultUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/commit/${context.sha}/checks`;
-
     const token = core.getInput('token', {required: true});
-    const jobStatus = core.getInput('status', {required: true});
-    const url = core.getInput('log-url', {required: false}) || defaultUrl;
+    const autoMerge = core.getInput('auto-merge', {required: false}) | false;
     const description = core.getInput('description', {required: false});
-    const env = core.getInput('environment', {required: false});
-    const envUrl = core.getInput('environment-url', {required: false});
-
-    let deployState = deployStatePending 
-    if (jobStatus == jobStatusSuccess) {
-      deployState = deployStateSuccess
-    } else if  (jobStatus == jobStatusFailure) {
-      deployState = deployStateFailure
-    }
+    const environment = core.getInput('environment', {required: false});
+    const payload = core.getInput('payload', {required: false});
+    const refId = core.getInput('ref-id', {required: true});
+    const task = core.getInput('task', {required: false});
 
     const client = new github.GitHub(token);
     const params = {
       ...context.repo,
-      deployment_id: context.payload.deployment.id,
-      state: deployState,
-      log_url: url,
-      target_url: url,
+      auto_merge: autoMerge,
       description,
+      environment,
+      payload,
+      ref: refId,
+      required_contexts: [],
+      task,
     };
-    if (env) {
-      params.environment = env;
-    }
-    if (envUrl) {
-      params.environment_url = envUrl;
-    }
-    await client.repos.createDeploymentStatus(params);
+    // https://developer.github.com/v4/mutation/createdeployment/
+    await client.repos.createDeployment(params);
   } catch (error) {
     core.error(error);
     core.setFailed(error.message);
