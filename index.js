@@ -6,9 +6,10 @@ async function run() {
     const jobStatusSuccess = 'Success'
     const jobStatusFailure = 'Failure'
     const jobStatusPending = 'Pending'
-    const success = 'success'
-    const failure = 'failure'
-    const pending = 'pending'
+
+    const deployStateSuccess = 'success'
+    const deployStateFailure = 'failure'
+    const deployStatePending = 'pending'
 
     const context = github.context;
     const defaultUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/commit/${context.sha}/checks`;
@@ -20,18 +21,18 @@ async function run() {
     const env = core.getInput('environment', {required: false});
     const envUrl = core.getInput('environment-url', {required: false});
 
-    let status = pending
+    let deployState = deployStatePending 
     if (jobStatus == jobStatusSuccess) {
-      status = success
+      deployState = deployStateSuccess
     } else if  (jobStatus == jobStatusFailure) {
-      status = failure
+      deployState = deployStateFailure
     }
 
     const client = new github.GitHub(token);
     const params = {
       ...context.repo,
       deployment_id: context.payload.deployment.id,
-      status,
+      state: deployState,
       log_url: url,
       target_url: url,
       description,
